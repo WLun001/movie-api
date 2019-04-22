@@ -86,6 +86,15 @@ func (r Repository) GetTrendingMovies(keyword string) (TrendingMovies, error) {
 	return trendingMovies, nil
 }
 
+func (r Repository) DeleteAll() error {
+	dbClient := database.Mongo
+	collection := dbClient.Database(dbName).Collection(trendingCollection)
+	if err := collection.Drop(context.TODO()); err != nil {
+		return errors.New(err.Error())
+	}
+	return nil
+}
+
 func (r Repository) saveToDatabase(data []byte) error {
 	dbClient := database.Mongo
 	collection := dbClient.Database(dbName).Collection(trendingCollection)

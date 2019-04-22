@@ -1,6 +1,6 @@
 package movie
 
-type Exception struct {
+type Message struct {
 	Message string `json:"message"`
 }
 

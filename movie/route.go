@@ -32,6 +32,12 @@ var routes = Routes{
 		apiVersion + "/trending",
 		controller.TrendingMovie,
 	},
+	Route{
+		"Delete all movies",
+		"DELETE",
+		apiVersion + "/trending",
+		controller.DeleteAllMovies,
+	},
 }
 
 func NewRouter() *mux.Router {

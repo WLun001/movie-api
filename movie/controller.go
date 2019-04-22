@@ -14,7 +14,7 @@ func (c *Controller) SaveMovieData(w http.ResponseWriter, r *http.Request) {
 	logRequest(r)
 	response, err := c.Repository.SaveMovieData()
 	if err != nil {
-		errByte, _ := json.Marshal(Exception{err.Error()})
+		errByte, _ := json.Marshal(Message{err.Error()})
 		writeResponse(&w, errByte, http.StatusInternalServerError)
 	} else {
 		writeResponse(&w, response)
@@ -26,13 +26,24 @@ func (c Controller) TrendingMovie(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Query().Get("title")
 	trendingMovies, err := c.Repository.GetTrendingMovies(title)
 	if err != nil {
-		errByte, _ := json.Marshal(Exception{err.Error()})
+		errByte, _ := json.Marshal(Message{err.Error()})
 		writeResponse(&w, errByte, http.StatusInternalServerError)
 	} else if len(trendingMovies) <= 0 {
-		errByte, _ := json.Marshal(Exception{"no data found"})
+		errByte, _ := json.Marshal(Message{"no data found"})
 		writeResponse(&w, errByte, http.StatusNotFound)
 	} else {
 		data, _ := json.Marshal(trendingMovies)
+		writeResponse(&w, data)
+	}
+}
+
+func (c Controller) DeleteAllMovies(w http.ResponseWriter, r *http.Request) {
+	logRequest(r)
+	if err := c.Repository.DeleteAll(); err != nil {
+		errByte, _ := json.Marshal(Message{err.Error()})
+		writeResponse(&w, errByte, http.StatusInternalServerError)
+	} else {
+		data, _ := json.Marshal(Message{"deleted all data"})
 		writeResponse(&w, data)
 	}
 }
