@@ -1,5 +1,9 @@
 package movie
 
+type Exception struct {
+	Message string `json:"message"`
+}
+
 type Response struct {
 	Page         int             `json:"page"`
 	Results      []TrendingMovie `json:"results"`
