@@ -11,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -21,7 +20,8 @@ func initDatabase() {
 		log.Fatal("Error loading .env file")
 	}
 
-	dbUri := os.Getenv("DBURi")
+	//dbUri := os.Getenv("DBURi")
+	dbUri := "mongodb://localhost:27017"
 	client, err := mongo.NewClient(options.Client().ApplyURI(dbUri))
 	log.Println("db client created")
 	if err != nil {

@@ -28,6 +28,9 @@ func (c Controller) TrendingMovie(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		errByte, _ := json.Marshal(Exception{err.Error()})
 		writeResponse(&w, errByte, http.StatusInternalServerError)
+	} else if len(trendingMovies) <= 0 {
+		errByte, _ := json.Marshal(Exception{"no data found"})
+		writeResponse(&w, errByte, http.StatusNotFound)
 	} else {
 		data, _ := json.Marshal(trendingMovies)
 		writeResponse(&w, data)
