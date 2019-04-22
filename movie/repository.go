@@ -2,16 +2,24 @@ package movie
 
 import (
 	"errors"
+	"github.com/joho/godotenv"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 type Repository struct{}
 
-const TmbdUrlTrendingMovieWeek = "https://api.themoviedb.org/3/trending/movie/week?api_key=f74026db6e599702db5d73c37ea43aa6"
-
 func (r Repository) SaveMovieData() ([]byte, error) {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	TmbdUrlTrendingMovieWeek := os.Getenv("TMDB")
+
 	response, err := http.Get(TmbdUrlTrendingMovieWeek)
 	if err != nil {
 		log.Println(err)
