@@ -60,7 +60,10 @@ func (r Repository) GetTrendingMovies() (TrendingMovies, error) {
 			if err != nil {
 				return nil, errors.New(err.Error())
 			} else {
-				trendingMovies = append(trendingMovies, trendingMovie)
+				modifiedMovie := trendingMovie
+				modifiedMovie.BackdropPath = imageBaseUrl + "/" + trendingMovie.BackdropPath
+				modifiedMovie.PosterPath = imageBaseUrl + "/" + trendingMovie.PosterPath
+				trendingMovies = append(trendingMovies, modifiedMovie)
 			}
 		}
 		if err := cursor.Err(); err != nil {
