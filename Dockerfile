@@ -13,11 +13,11 @@ RUN set -x && \
     go get github.com/golang/dep/cmd/dep && \
     dep ensure -v
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /main
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o main
 
 EXPOSE 5000
 
-CMD ["/main"]
+CMD ["./main"]
 
 ########
 # second stage to obtain a very small image
