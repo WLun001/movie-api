@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/wlun/movie-api/database"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,7 +21,7 @@ const dbName = "movie"
 const trendingCollection = "trending"
 const imageBaseUrl = "https://image.tmdb.org/t/p/w500"
 
-func (r Repository) SaveMovieData() ([]byte, error) {
+func (r Repository) SaveMovieData() (Message, error) {
 
 	err := godotenv.Load()
 	if err != nil {
@@ -32,17 +33,18 @@ func (r Repository) SaveMovieData() ([]byte, error) {
 	response, err := http.Get(TmbdUrlTrendingMovieWeek)
 	if err != nil {
 		log.Println(err)
-		return nil, errors.New(err.Error())
+		return Message{}, errors.New(err.Error())
 	} else {
 		data, err := ioutil.ReadAll(response.Body)
 		if err != nil {
 			log.Println(err)
-			return nil, errors.New(err.Error())
+			return Message{}, errors.New(err.Error())
 		} else {
-			if err := r.saveToDatabase(data); err != nil {
-				return nil, errors.New(err.Error())
+			var savedData int
+			if savedData, err = r.saveToDatabase(data); err != nil {
+				return Message{}, errors.New(err.Error())
 			}
-			return data, nil
+			return Message{fmt.Sprintf("successfully saved %d records", savedData)}, nil
 		}
 	}
 }
@@ -95,15 +97,15 @@ func (r Repository) DeleteAll() error {
 	return nil
 }
 
-func (r Repository) saveToDatabase(data []byte) error {
+func (r Repository) saveToDatabase(data []byte) (savedData int, err error) {
 	dbClient := database.Mongo
 	collection := dbClient.Database(dbName).Collection(trendingCollection)
 
 	var response Response
-	err := json.Unmarshal(data, &response)
+	err = json.Unmarshal(data, &response)
 	if err != nil {
 		log.Println(err)
-		return errors.New(err.Error())
+		return 0, errors.New(err.Error())
 	}
 	trendingMovie := response.Results
 	var movies []interface{}
@@ -113,7 +115,7 @@ func (r Repository) saveToDatabase(data []byte) error {
 	_, err = collection.InsertMany(context.TODO(), movies)
 	if err != nil {
 		log.Println(err)
-		return errors.New(err.Error())
+		return 0, errors.New(err.Error())
 	}
-	return nil
+	return len(movies), nil
 }

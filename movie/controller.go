@@ -17,7 +17,8 @@ func (c *Controller) SaveMovieData(w http.ResponseWriter, r *http.Request) {
 		errByte, _ := json.Marshal(Message{err.Error()})
 		writeResponse(&w, errByte, http.StatusInternalServerError)
 	} else {
-		writeResponse(&w, response)
+		jsonResponse, _ := json.Marshal(response)
+		writeResponse(&w, jsonResponse)
 	}
 }
 
