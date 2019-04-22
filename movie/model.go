@@ -23,3 +23,5 @@ type TrendingMovie struct {
 	VoteCount        int     `json:"vote_count"`
 	Popularity       float64 `json:"popularity"`
 }
+
+type TrendingMovies []TrendingMovie

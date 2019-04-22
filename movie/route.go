@@ -26,6 +26,12 @@ var routes = Routes{
 		apiVersion + "/save",
 		controller.SaveMovieData,
 	},
+	Route{
+		"Get trending movies",
+		"GET",
+		apiVersion + "/trending",
+		controller.TrendingMovie,
+	},
 }
 
 func NewRouter() *mux.Router {

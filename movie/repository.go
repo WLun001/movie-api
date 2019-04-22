@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/joho/godotenv"
 	"github.com/wlun/movie-api/database"
+	"go.mongodb.org/mongo-driver/bson"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,6 +17,7 @@ type Repository struct{}
 
 const dbName = "movie"
 const trendingCollection = "trending"
+const imageBaseUrl = "https://image.tmdb.org/t/p/w500"
 
 func (r Repository) SaveMovieData() ([]byte, error) {
 
@@ -42,6 +44,35 @@ func (r Repository) SaveMovieData() ([]byte, error) {
 			return data, nil
 		}
 	}
+}
+
+func (r Repository) GetTrendingMovies() (TrendingMovies, error) {
+	dbClient := database.Mongo
+	collection := dbClient.Database(dbName).Collection(trendingCollection)
+	var trendingMovies TrendingMovies
+	if cursor, err := collection.Find(context.TODO(), bson.D{}); err != nil {
+		log.Println(err)
+		return nil, errors.New(err.Error())
+	} else {
+		for cursor.Next(context.TODO()) {
+			var trendingMovie TrendingMovie
+			err := cursor.Decode(&trendingMovie)
+			if err != nil {
+				return nil, errors.New(err.Error())
+			} else {
+				trendingMovies = append(trendingMovies, trendingMovie)
+			}
+		}
+		if err := cursor.Err(); err != nil {
+			log.Println(err)
+			return nil, errors.New(err.Error())
+		}
+		if err := cursor.Close(context.TODO()); err != nil {
+			log.Println(err)
+			return nil, errors.New(err.Error())
+		}
+	}
+	return trendingMovies, nil
 }
 
 func (r Repository) saveToDatabase(data []byte) error {

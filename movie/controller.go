@@ -21,6 +21,18 @@ func (c *Controller) SaveMovieData(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (c Controller) TrendingMovie(w http.ResponseWriter, r *http.Request) {
+	logRequest(r)
+	trendingMovies, err := c.Repository.GetTrendingMovies()
+	if err != nil {
+		errByte, _ := json.Marshal(err)
+		writeResponse(&w, errByte, http.StatusInternalServerError)
+	} else {
+		data, _ := json.Marshal(trendingMovies)
+		writeResponse(&w, data)
+	}
+}
+
 func logRequest(r *http.Request) {
 	log.Printf("API (request) - host: %s, method: %s, path: %s, query: %s, user agent: %s",
 		r.Host,
