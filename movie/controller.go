@@ -23,7 +23,8 @@ func (c *Controller) SaveMovieData(w http.ResponseWriter, r *http.Request) {
 
 func (c Controller) TrendingMovie(w http.ResponseWriter, r *http.Request) {
 	logRequest(r)
-	trendingMovies, err := c.Repository.GetTrendingMovies()
+	title := r.URL.Query().Get("title")
+	trendingMovies, err := c.Repository.GetTrendingMovies(title)
 	if err != nil {
 		errByte, _ := json.Marshal(err)
 		writeResponse(&w, errByte, http.StatusInternalServerError)

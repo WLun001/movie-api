@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/wlun/movie-api/database"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -46,11 +47,18 @@ func (r Repository) SaveMovieData() ([]byte, error) {
 	}
 }
 
-func (r Repository) GetTrendingMovies() (TrendingMovies, error) {
+func (r Repository) GetTrendingMovies(keyword string) (TrendingMovies, error) {
+	var trendingMovies TrendingMovies
 	dbClient := database.Mongo
 	collection := dbClient.Database(dbName).Collection(trendingCollection)
-	var trendingMovies TrendingMovies
-	if cursor, err := collection.Find(context.TODO(), bson.D{}); err != nil {
+	filter := bson.D{}
+	if keyword != "" {
+		filter = bson.D{{
+			"title",
+			primitive.Regex{Pattern: keyword, Options: " i"},
+		}}
+	}
+	if cursor, err := collection.Find(context.TODO(), filter); err != nil {
 		log.Println(err)
 		return nil, errors.New(err.Error())
 	} else {
