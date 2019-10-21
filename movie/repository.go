@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/wlun/movie-api/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"io/ioutil"
 	"log"
+	"movie-api/database"
 	"net/http"
 	"os"
 )
@@ -22,11 +21,6 @@ const trendingCollection = "trending"
 const imageBaseUrl = "https://image.tmdb.org/t/p/w500"
 
 func (r Repository) SaveMovieData() (Message, error) {
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	TmbdUrlTrendingMovieWeek := os.Getenv("TMDB")
 

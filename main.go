@@ -3,23 +3,18 @@ package main
 import (
 	"context"
 	"github.com/gorilla/handlers"
-	"github.com/joho/godotenv"
-	"github.com/wlun/movie-api/database"
-	"github.com/wlun/movie-api/movie"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
+	"movie-api/database"
+	"movie-api/movie"
 	"net/http"
 	"os"
 	"time"
 )
 
 func initDatabase() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	dbUri := os.Getenv("DBURi")
 	//dbUri := "mongodb://localhost:27017"

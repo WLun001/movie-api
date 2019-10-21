@@ -5,6 +5,8 @@ settings:
 schema:
   - name: movie-api
     path: .
+    env:
+      DBURi: ""
     commands:
       install:
         status: true
