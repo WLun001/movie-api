@@ -2,11 +2,11 @@
 A simple API that retrieve trending movies data from [The movie database](https://www.themoviedb.org/), and store into MongoDB
 
 
-## How to run
+# How to run
 
 1. Download [Realize](https://github.com/oxequa/realize)
 2. Make sure to add `go/bin` to env
-3. Run `realize start`
+3. Run `realize start`, and all the related packages should be installed
 
 ## API endpoints
 `base url = api/v1`
